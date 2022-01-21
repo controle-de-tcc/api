@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Advisor {
+    siape Int    @id
+    nome  String
+    email String @unique
+    senha String
+
+    sugestao Suggestion[]
+    @@map(name: "orientador")
+}
+
+model Student {
+    matricula Int    @id
+    nome      String
+    email     String @unique
+    senha     String
+
+    trabalho Project[]
+    @@map(name: "aluno")
+}
+
+model Project {
+    id        Int       @id @default(autoincrement())
+    titulo    String
+    aluno     Student   @relation(fields: [mat_aluno], references: [matricula])
+    mat_aluno Int
+    versao    Version[]
+
+    @@map(name: "trabalho")
+}
+
+model Version {
+    id          Int      @id @default(autoincrement())
+    trabalho    Project  @relation(fields: [id_trabalho], references: [id])
+    id_trabalho Int
+    created_at  DateTime @default(now())
+
+    sugestao Suggestion[]
+    @@map(name: "versao")
+}
+
+model Suggestion {
+    id               Int     @id @default(autoincrement())
+    valor            String  @db.VarChar(500)
+    orientador       Advisor @relation(fields: [siape_orientador], references: [siape])
+    siape_orientador Int
+    versao           Version @relation(fields: [id_versao], references: [id])
+    id_versao        Int
+
+    @@map(name: "sugestao")
+}
