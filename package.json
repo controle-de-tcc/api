@@ -1,0 +1,9 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "API para o Sistema de Controle de TCC",
+  "main": "src/index.js",
+  "repository": "git@github.com:controle-de-tcc/api.git",
+  "author": "Pedro Feltrin <pedrofeltrin45@gmail.com>",
+  "license": "MIT"
+}
