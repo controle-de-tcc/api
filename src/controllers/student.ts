@@ -13,7 +13,7 @@ export class StudentController
 		return student;
 	}
 
-	public async list(): Promise<Student[]> {
+	public async list(): Promise<Array<Student>> {
 		const students = await this.client.student.findMany();
 		return students;
 	}

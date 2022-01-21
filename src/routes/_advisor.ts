@@ -1,12 +1,11 @@
 import { Router } from "express";
 import { Advisor } from "@prisma/client";
 import { AdvisorController } from "controllers/advisor";
+import { DEFAULT_ERROR_MSG } from "lib/constants";
 
 const advisorRoutes = Router();
 
 const controller = new AdvisorController();
-
-const DEFAULT_ERROR_MSG = "Ocorreu um erro inesperado";
 
 advisorRoutes.get("/", async (_, res) => {
 	try {

@@ -13,7 +13,7 @@ export class AdvisorController
 		return advisor;
 	}
 
-	public async list(): Promise<Advisor[]> {
+	public async list(): Promise<Array<Advisor>> {
 		const advisors = this.client.advisor.findMany();
 		return advisors;
 	}

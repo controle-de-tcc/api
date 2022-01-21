@@ -1,12 +1,11 @@
 import { Router } from "express";
 import { Student } from "@prisma/client";
 import { StudentController } from "controllers/student";
+import { DEFAULT_ERROR_MSG } from "lib/constants";
 
 const studentRoutes = Router();
 
 const controller = new StudentController();
-
-const DEFAULT_ERROR_MSG = "Ocorreu um erro inesperado";
 
 studentRoutes.get("/", async (_, res) => {
 	try {

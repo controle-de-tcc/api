@@ -31,12 +31,12 @@ model Student {
 }
 
 model Project {
-    id        Int       @id @default(autoincrement())
+    id        Int     @id @default(autoincrement())
     titulo    String
-    aluno     Student   @relation(fields: [mat_aluno], references: [matricula])
+    aluno     Student @relation(fields: [mat_aluno], references: [matricula])
     mat_aluno Int
-    versao    Version[]
 
+    versao Version[]
     @@map(name: "trabalho")
 }
 

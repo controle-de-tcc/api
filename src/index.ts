@@ -4,8 +4,9 @@ import { routes } from "routes";
 const api = express();
 api.use(express.json());
 
-api.use("/student", routes.student);
-api.use("/advisor", routes.advisor);
+api.use("/orientador", routes.advisor);
+api.use("/trabalho", routes.project);
+api.use("/aluno", routes.student);
 
 const PORT = process.env.PORT || 8000;
 
