@@ -1,10 +1,11 @@
 import express from "express";
-import { userRouter } from "./routes/user";
+import { routes } from "routes";
 
 const api = express();
 api.use(express.json());
 
-api.use("/user", userRouter);
+api.use("/student", routes.student);
+api.use("/advisor", routes.advisor);
 
 const PORT = process.env.PORT || 8000;
 
