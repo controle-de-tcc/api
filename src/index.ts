@@ -7,8 +7,8 @@ api.use(express.json());
 api.use("/orientador", routes.advisor);
 api.use("/trabalho", routes.project);
 api.use("/aluno", routes.student);
-api.use("/versao", routes.version)
-api.use("/sugestao", routes.suggestion)
+api.use("/versao", routes.version);
+api.use("/sugestao", routes.suggestion);
 
 const PORT = process.env.PORT || 8000;
 
