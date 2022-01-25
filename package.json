@@ -15,7 +15,8 @@
 	},
 	"dependencies": {
 		"@prisma/client": "^3.8.1",
-		"express": "^4.17.2"
+		"express": "^4.17.2",
+		"yarn": "^1.22.17"
 	},
 	"scripts": {
 		"start": "nodemon -L src/index.ts",
