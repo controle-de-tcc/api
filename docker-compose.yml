@@ -16,6 +16,7 @@ services:
         build: .
         environment:
             NODE_ENV: production
+            NODE_PATH: ./src
             PORT: 8080
             DATABASE_URL: postgresql://postgres:postgres@postgres:5432/controle_de_tcc?schema=public
         volumes:
