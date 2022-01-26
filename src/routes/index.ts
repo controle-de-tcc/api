@@ -3,9 +3,11 @@ import { projectRoutes } from "./_project";
 import { studentRoutes } from "./_student";
 import { versionRoutes } from "./_version";
 import { suggestionRoutes } from "./_suggestion";
+import { authRoutes } from "./_auth";
 
 export const routes = {
 	advisor: advisorRoutes,
+	auth: authRoutes,
 	project: projectRoutes,
 	student: studentRoutes,
 	version: versionRoutes,

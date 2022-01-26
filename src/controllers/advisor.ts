@@ -17,4 +17,11 @@ export class AdvisorController
 		const advisors = this.client.advisor.findMany();
 		return advisors;
 	}
+
+	public async get(email: string): Promise<Advisor | null> {
+		const advisor = this.client.advisor.findUnique({
+			where: { email },
+		});
+		return advisor;
+	}
 }

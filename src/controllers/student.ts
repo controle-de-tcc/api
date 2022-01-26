@@ -17,4 +17,11 @@ export class StudentController
 		const students = await this.client.student.findMany();
 		return students;
 	}
+
+	public async get(email: string): Promise<Student | null> {
+		const student = await this.client.student.findUnique({
+			where: { email },
+		});
+		return student;
+	}
 }

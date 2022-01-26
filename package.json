@@ -6,19 +6,24 @@
 	"repository": "git@github.com:controle-de-tcc/api.git",
 	"author": "Pedro Feltrin <pedrofeltrin45@gmail.com>",
 	"license": "MIT",
+	"dependencies": {
+		"@prisma/client": "^3.8.1",
+		"bcrypt": "^5.0.1",
+		"express": "^4.17.2",
+		"jsonwebtoken": "^8.5.1",
+		"yup": "^0.32.11"
+	},
 	"devDependencies": {
+		"@types/bcrypt": "^5.0.0",
 		"@types/express": "^4.17.13",
+		"@types/jsonwebtoken": "^8.5.8",
 		"@types/node": "^17.0.10",
 		"prisma": "^3.8.1",
 		"ts-node": "^10.4.0",
 		"typescript": "^4.5.5"
 	},
-	"dependencies": {
-		"@prisma/client": "^3.8.1",
-		"express": "^4.17.2"
-	},
 	"scripts": {
 		"start": "nodemon -L src/index.ts",
-		"start.dev": "npx prisma migrate dev --name init && nodemon -L src/index.ts"
+		"start.dev": "npx prisma migrate dev --name init && NODE_PATH=src/ nodemon -L src/index.ts"
 	}
 }
