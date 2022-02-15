@@ -1,8 +1,10 @@
 import express from "express";
 import { routes } from "routes";
+import cors from "cors";
 
 const api = express();
 api.use(express.json());
+api.use(cors());
 
 api.use("/orientador", routes.advisor);
 api.use("/trabalho", routes.project);
