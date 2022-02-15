@@ -27,6 +27,8 @@ services:
             - 8080:8080
         networks:
             - default
+        stdin_open: true # docker run -i
+        tty: true # docker run -t
 networks:
     default:
 volumes:
