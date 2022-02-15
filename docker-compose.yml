@@ -9,7 +9,7 @@ services:
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
-            POSTGRES_DB: controle-de-tcc
+            POSTGRES_DB: controle_de_tcc
         networks:
             - default
     node:
