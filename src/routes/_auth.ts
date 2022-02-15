@@ -30,8 +30,13 @@ authRoutes.post<null, LoginResponse | { msg: string }, LoginRequest>(
 			if (!user) {
 				return res.status(404).json({ msg: "Usuário não encontrado" });
 			}
-			if (user.senha !== senha) {
-				return res.status(401).json({ msg: "Senha incorreta" });
+
+			try {
+				if(!(await bcrypt.compare(senha, user.senha))){
+					return res.status(401).json({ msg: "Senha incorreta" });
+				}
+			} catch {
+				res.status(500).send();
 			}
 
 			const isStudent = "matricula" in user;
@@ -74,6 +79,8 @@ authRoutes.post<null, SignupResponse | { msg: string }, SignupRequest>(
 			}
 
 			const { body } = req;
+			const hashedPassword = await bcrypt.hash(req.body.senha, 10)
+			body.senha = hashedPassword;
 			const isStudent = "matricula" in body;
 			const newUser = isStudent
 				? await studentController.create(body)
@@ -81,7 +88,9 @@ authRoutes.post<null, SignupResponse | { msg: string }, SignupRequest>(
 			res.status(201).json({
 				user: newUser,
 			});
+
 		} catch (err) {
+			console.log(err)
 			res.status(400).json({
 				msg: DEFAULT_ERROR_MSG,
 			});
