@@ -15,9 +15,10 @@ model Advisor {
     nome  String
     email String @unique
     senha String
+    tipoProfessor String 
 
     sugestao Suggestion[]
-    @@map(name: "orientador")
+    @@map(name: "professor")
 }
 
 model Student {
@@ -53,8 +54,8 @@ model Version {
 model Suggestion {
     id               Int     @id @default(autoincrement())
     valor            String  @db.VarChar(500)
-    orientador       Advisor @relation(fields: [siape_orientador], references: [siape])
-    siape_orientador Int
+    orientador       Advisor @relation(fields: [siape_professor], references: [siape])
+    siape_professor Int
     versao           Version @relation(fields: [id_versao], references: [id])
     id_versao        Int
 
