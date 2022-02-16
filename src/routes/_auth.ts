@@ -32,11 +32,11 @@ authRoutes.post<null, LoginResponse | { msg: string }, LoginRequest>(
 			}
 
 			try {
-				if(!(await bcrypt.compare(senha, user.senha))){
+				if (!(await bcrypt.compare(senha, user.senha))) {
 					return res.status(401).json({ msg: "Senha incorreta" });
 				}
 			} catch {
-				res.status(500).send();
+				return res.status(500).send();
 			}
 
 			const isStudent = "matricula" in user;
@@ -79,7 +79,7 @@ authRoutes.post<null, SignupResponse | { msg: string }, SignupRequest>(
 			}
 
 			const { body } = req;
-			const hashedPassword = await bcrypt.hash(req.body.senha, 10)
+			const hashedPassword = await bcrypt.hash(req.body.senha, 10);
 			body.senha = hashedPassword;
 			const isStudent = "matricula" in body;
 			const newUser = isStudent
@@ -88,9 +88,8 @@ authRoutes.post<null, SignupResponse | { msg: string }, SignupRequest>(
 			res.status(201).json({
 				user: newUser,
 			});
-
 		} catch (err) {
-			console.log(err)
+			console.log(err);
 			res.status(400).json({
 				msg: DEFAULT_ERROR_MSG,
 			});
