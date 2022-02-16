@@ -31,12 +31,8 @@ authRoutes.post<null, LoginResponse | { msg: string }, LoginRequest>(
 				return res.status(404).json({ msg: "Usuário não encontrado" });
 			}
 
-			try {
-				if (!(await bcrypt.compare(senha, user.senha))) {
-					return res.status(401).json({ msg: "Senha incorreta" });
-				}
-			} catch {
-				return res.status(500).send();
+			if (!(await bcrypt.compare(senha, user.senha))) {
+				return res.status(401).json({ msg: "Senha incorreta" });
 			}
 
 			const isStudent = "matricula" in user;
