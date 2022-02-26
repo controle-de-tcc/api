@@ -7,9 +7,8 @@ api.use(express.json());
 api.use(cors());
 
 api.use("/orientador", routes.advisor);
-api.use("/trabalho", routes.project);
+api.use("/projeto", routes.project);
 api.use("/aluno", routes.student);
-api.use("/versao", routes.version);
 api.use("/sugestao", routes.suggestion);
 api.use("/auth", routes.auth);
 

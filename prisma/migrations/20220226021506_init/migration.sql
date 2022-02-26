@@ -1,11 +1,12 @@
 -- CreateTable
-CREATE TABLE "orientador" (
+CREATE TABLE "professor" (
     "siape" INTEGER NOT NULL,
     "nome" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "senha" TEXT NOT NULL,
+    "tipoProfessor" TEXT NOT NULL,
 
-    CONSTRAINT "orientador_pkey" PRIMARY KEY ("siape")
+    CONSTRAINT "professor_pkey" PRIMARY KEY ("siape")
 );
 
 -- CreateTable
@@ -40,14 +41,14 @@ CREATE TABLE "versao" (
 CREATE TABLE "sugestao" (
     "id" SERIAL NOT NULL,
     "valor" VARCHAR(500) NOT NULL,
-    "siape_orientador" INTEGER NOT NULL,
+    "siape_professor" INTEGER NOT NULL,
     "id_versao" INTEGER NOT NULL,
 
     CONSTRAINT "sugestao_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "orientador_email_key" ON "orientador"("email");
+CREATE UNIQUE INDEX "professor_email_key" ON "professor"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "aluno_email_key" ON "aluno"("email");
@@ -59,7 +60,7 @@ ALTER TABLE "trabalho" ADD CONSTRAINT "trabalho_mat_aluno_fkey" FOREIGN KEY ("ma
 ALTER TABLE "versao" ADD CONSTRAINT "versao_id_trabalho_fkey" FOREIGN KEY ("id_trabalho") REFERENCES "trabalho"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "sugestao" ADD CONSTRAINT "sugestao_siape_orientador_fkey" FOREIGN KEY ("siape_orientador") REFERENCES "orientador"("siape") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "sugestao" ADD CONSTRAINT "sugestao_siape_professor_fkey" FOREIGN KEY ("siape_professor") REFERENCES "professor"("siape") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "sugestao" ADD CONSTRAINT "sugestao_id_versao_fkey" FOREIGN KEY ("id_versao") REFERENCES "versao"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
