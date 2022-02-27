@@ -8,12 +8,27 @@ type ListProjectResponse = {
 	aluno: Omit<Student, "senha">;
 };
 
+export type CreateProjectBody = Omit<Project, "id"> & {
+	avaliadores: number[];
+};
+
 export class ProjectController
 	extends BaseController
 	implements BaseOperations<Project>
 {
-	public async create(body: Omit<Project, "id">): Promise<Project> {
-		const project = await this.client.project.create({ data: body });
+	public async create(body: CreateProjectBody): Promise<Project> {
+		const project = await this.client.project.create({
+			data: {
+				titulo: body.titulo,
+				mat_aluno: body.mat_aluno,
+				siape_orientador: body.siape_orientador,
+				avaliadores: {
+					create: body.avaliadores.map((siape) => ({
+						avaliador: { connect: { siape } },
+					})),
+				},
+			},
+		});
 		return project;
 	}
 
@@ -27,10 +42,18 @@ export class ProjectController
 						matricula: true,
 						nome: true,
 						email: true,
-						createdAt: true,
-						updatedAt: true,
+						created_at: true,
+						updated_at: true,
 					},
 				},
+				orientador: true,
+				avaliadores: {
+					select: {
+						avaliador: true,
+					},
+				},
+				created_at: true,
+				updated_at: true,
 			},
 		});
 		return projects;

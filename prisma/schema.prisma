@@ -11,41 +11,56 @@ datasource db {
 }
 
 model Advisor {
-    siape         Int          @id
-    nome          String
-    email         String       @unique
-    senha         String
-    tipoProfessor String
-    projetos      Project[]
-    sugestao      Suggestion[]
-    createdAt     DateTime     @default(now())
-    updatedAt     DateTime     @updatedAt
+    siape          Int                  @id
+    nome           String
+    email          String               @unique
+    senha          String
+    tipo_professor String
+    sugestao       Suggestion[]
+    projetos       ProjectsOnAdvisors[]
+    created_at     DateTime             @default(now())
+    updated_at     DateTime             @updatedAt
 
+    Project Project[]
     @@map(name: "professor")
 }
 
 model Student {
-    matricula Int      @id
-    nome      String
-    email     String   @unique
-    senha     String
-    trabalho  Project?
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    matricula  Int      @id
+    nome       String
+    email      String   @unique
+    senha      String
+    projeto    Project?
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 
     @@map(name: "aluno")
 }
 
 model Project {
-    id          Int       @id @default(autoincrement())
-    titulo      String
-    aluno       Student   @relation(fields: [mat_aluno], references: [matricula])
-    mat_aluno   Int       @unique
-    professores Advisor[]
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
+    id               Int                  @id @default(autoincrement())
+    titulo           String
+    aluno            Student              @relation(fields: [mat_aluno], references: [matricula])
+    mat_aluno        Int                  @unique
+    orientador       Advisor              @relation(fields: [siape_orientador], references: [siape])
+    siape_orientador Int
+    avaliadores      ProjectsOnAdvisors[]
+    created_at       DateTime             @default(now())
+    updated_at       DateTime             @updatedAt
 
-    @@map(name: "trabalho")
+    @@map(name: "projeto")
+}
+
+model ProjectsOnAdvisors {
+    projeto    Project  @relation(fields: [id_projeto], references: [id])
+    id_projeto Int
+    avaliador  Advisor  @relation(fields: [siape], references: [siape])
+    siape      Int
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    @@id([id_projeto, siape])
+    @@map(name: "avaliador_projeto")
 }
 
 model Suggestion {
@@ -53,8 +68,8 @@ model Suggestion {
     valor           String   @db.VarChar(500)
     orientador      Advisor  @relation(fields: [siape_professor], references: [siape])
     siape_professor Int
-    createdAt       DateTime @default(now())
-    updatedAt       DateTime @updatedAt
+    created_at      DateTime @default(now())
+    updated_at      DateTime @updatedAt
 
     @@map(name: "sugestao")
 }
