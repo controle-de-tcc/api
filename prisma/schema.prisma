@@ -17,11 +17,11 @@ model Advisor {
     senha          String
     tipo_professor String
     sugestao       Suggestion[]
-    projetos       ProjectsOnAdvisors[]
+    projeto        Project[] // essa é a referencia do projeto ao orientador
+    projetos       ProjectsOnAdvisors[] // essa é a referencia do projeto aos avaliadores
     created_at     DateTime             @default(now())
     updated_at     DateTime             @updatedAt
 
-    Project Project[]
     @@map(name: "professor")
 }
 
@@ -63,11 +63,23 @@ model ProjectsOnAdvisors {
     @@map(name: "avaliador_projeto")
 }
 
+model Version {
+    id         Int          @id @default(autoincrement())
+    arquivo    String
+    sugestoes  Suggestion[]
+    created_at DateTime     @default(now())
+    updated_at DateTime     @updatedAt
+
+    @@map(name: "versao")
+}
+
 model Suggestion {
     id              Int      @id @default(autoincrement())
-    valor           String   @db.VarChar(500)
-    orientador      Advisor  @relation(fields: [siape_professor], references: [siape])
+    texto           String   @db.VarChar(500)
+    professor       Advisor  @relation(fields: [siape_professor], references: [siape])
     siape_professor Int
+    versao          Version  @relation(fields: [id_versao], references: [id])
+    id_versao       Int
     created_at      DateTime @default(now())
     updated_at      DateTime @updatedAt
 
