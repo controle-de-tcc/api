@@ -27,6 +27,8 @@ export class ProjectController
 						matricula: true,
 						nome: true,
 						email: true,
+						createdAt: true,
+						updatedAt: true,
 					},
 				},
 			},

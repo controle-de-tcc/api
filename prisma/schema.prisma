@@ -18,6 +18,8 @@ model Advisor {
     tipoProfessor String
     projetos      Project[]
     sugestao      Suggestion[]
+    createdAt     DateTime     @default(now())
+    updatedAt     DateTime     @updatedAt
 
     @@map(name: "professor")
 }
@@ -28,6 +30,8 @@ model Student {
     email     String   @unique
     senha     String
     trabalho  Project?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     @@map(name: "aluno")
 }
@@ -38,15 +42,19 @@ model Project {
     aluno       Student   @relation(fields: [mat_aluno], references: [matricula])
     mat_aluno   Int       @unique
     professores Advisor[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
 
     @@map(name: "trabalho")
 }
 
 model Suggestion {
-    id              Int     @id @default(autoincrement())
-    valor           String  @db.VarChar(500)
-    orientador      Advisor @relation(fields: [siape_professor], references: [siape])
+    id              Int      @id @default(autoincrement())
+    valor           String   @db.VarChar(500)
+    orientador      Advisor  @relation(fields: [siape_professor], references: [siape])
     siape_professor Int
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
 
     @@map(name: "sugestao")
 }
