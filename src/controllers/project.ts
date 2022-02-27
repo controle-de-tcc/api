@@ -2,7 +2,7 @@ import { Project, Student } from "@prisma/client";
 import { BaseController } from "./_baseController";
 import { BaseOperations } from "./_baseOperations";
 
-type ListProjectResponse = {
+export type ListProjectResponse = {
 	id: Project["id"];
 	titulo: Project["titulo"];
 	aluno: Omit<Student, "senha">;
@@ -10,6 +10,28 @@ type ListProjectResponse = {
 
 export type CreateProjectBody = Omit<Project, "id"> & {
 	avaliadores: number[];
+};
+
+const listQuerySelect = {
+	id: true,
+	titulo: true,
+	aluno: {
+		select: {
+			matricula: true,
+			nome: true,
+			email: true,
+			created_at: true,
+			updated_at: true,
+		},
+	},
+	orientador: true,
+	avaliadores: {
+		select: {
+			avaliador: true,
+		},
+	},
+	created_at: true,
+	updated_at: true,
 };
 
 export class ProjectController
@@ -34,28 +56,27 @@ export class ProjectController
 
 	public async list(): Promise<Array<ListProjectResponse>> {
 		const projects = await this.client.project.findMany({
-			select: {
-				id: true,
-				titulo: true,
-				aluno: {
-					select: {
-						matricula: true,
-						nome: true,
-						email: true,
-						created_at: true,
-						updated_at: true,
-					},
-				},
-				orientador: true,
-				avaliadores: {
-					select: {
-						avaliador: true,
-					},
-				},
-				created_at: true,
-				updated_at: true,
-			},
+			select: listQuerySelect,
 		});
+		return projects;
+	}
+
+	public async listByReviewer(
+		siape: number
+	): Promise<Array<ListProjectResponse>> {
+		const projects = await this.client.project.findMany({
+			where: {
+				avaliadores: {
+					some: {
+						avaliador: {
+							siape,
+						},
+					},
+				},
+			},
+			select: listQuerySelect,
+		});
+
 		return projects;
 	}
 }
