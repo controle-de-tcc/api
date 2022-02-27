@@ -1,4 +1,5 @@
 import { Advisor, Student } from "@prisma/client";
+import { ListAdvisorResponse } from "controllers/advisor";
 
 export type LoginRequest = {
 	email: string;
@@ -8,7 +9,7 @@ export type LoginRequest = {
 export type LoginResponse = {
 	token: string;
 	userType: "student" | "advisor";
-	user: Student | Advisor;
+	user: Student | ListAdvisorResponse;
 };
 
 export type SignupRequest = Student | Advisor;

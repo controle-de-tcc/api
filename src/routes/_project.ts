@@ -18,7 +18,6 @@ projectRoutes.get<null, { msg: string } | Array<ListProjectResponse>>(
 			const projects = await controller.list();
 			res.status(200).json(projects);
 		} catch (err) {
-			console.log(err);
 			res.status(400).json({
 				msg: DEFAULT_ERROR_MSG,
 			});
@@ -33,7 +32,6 @@ projectRoutes.post<null, { msg: string } | Project, CreateProjectBody>(
 			const project = await controller.create(req.body);
 			res.status(201).json(project);
 		} catch (err) {
-			console.log(err);
 			res.status(400).json({
 				msg: DEFAULT_ERROR_MSG,
 			});
@@ -50,10 +48,30 @@ projectRoutes.get<
 		const projects = await controller.listByReviewer(Number(siape));
 		res.status(200).json(projects);
 	} catch (err) {
-		console.log(err);
 		res.status(400).json({
 			msg: DEFAULT_ERROR_MSG,
 		});
 	}
 });
+
+projectRoutes.get<{ matricula: string }, { msg: string } | ListProjectResponse>(
+	"/por-aluno/:matricula",
+	async (req, res) => {
+		try {
+			const { matricula } = req.params;
+			const project = await controller.getByStudent(Number(matricula));
+			if (project === null) {
+				return res.status(404).json({
+					msg: "Projeto não encontrado",
+				});
+			}
+			res.status(200).json(project);
+		} catch (err) {
+			res.status(400).json({
+				msg: DEFAULT_ERROR_MSG,
+			});
+		}
+	}
+);
+
 export { projectRoutes };

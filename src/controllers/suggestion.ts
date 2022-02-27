@@ -1,11 +1,7 @@
 import { Suggestion } from "@prisma/client";
 import { BaseController } from "./_baseController";
-import { BaseOperations } from "./_baseOperations";
 
-export class SuggestionController
-	extends BaseController
-	implements BaseOperations<Suggestion>
-{
+export class SuggestionController extends BaseController {
 	public async create(body: Suggestion): Promise<Suggestion> {
 		const suggestion = this.client.suggestion.create({
 			data: body,

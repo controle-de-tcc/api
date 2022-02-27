@@ -1,10 +1,10 @@
 import { Project, Student } from "@prisma/client";
+import { listAdvisorQuerySelect } from "./advisor";
 import { BaseController } from "./_baseController";
-import { BaseOperations } from "./_baseOperations";
 
 export type ListProjectResponse = {
-	id: Project["id"];
-	titulo: Project["titulo"];
+	id: number;
+	titulo: string;
 	aluno: Omit<Student, "senha">;
 };
 
@@ -12,7 +12,7 @@ export type CreateProjectBody = Omit<Project, "id"> & {
 	avaliadores: number[];
 };
 
-const listQuerySelect = {
+const listProjectQuerySelect = {
 	id: true,
 	titulo: true,
 	aluno: {
@@ -24,20 +24,21 @@ const listQuerySelect = {
 			updated_at: true,
 		},
 	},
-	orientador: true,
+	orientador: {
+		select: listAdvisorQuerySelect,
+	},
 	avaliadores: {
 		select: {
-			avaliador: true,
+			avaliador: {
+				select: listAdvisorQuerySelect,
+			},
 		},
 	},
 	created_at: true,
 	updated_at: true,
 };
 
-export class ProjectController
-	extends BaseController
-	implements BaseOperations<Project>
-{
+export class ProjectController extends BaseController {
 	public async create(body: CreateProjectBody): Promise<Project> {
 		const project = await this.client.project.create({
 			data: {
@@ -56,7 +57,7 @@ export class ProjectController
 
 	public async list(): Promise<Array<ListProjectResponse>> {
 		const projects = await this.client.project.findMany({
-			select: listQuerySelect,
+			select: listProjectQuerySelect,
 		});
 		return projects;
 	}
@@ -74,9 +75,22 @@ export class ProjectController
 					},
 				},
 			},
-			select: listQuerySelect,
+			select: listProjectQuerySelect,
 		});
 
 		return projects;
+	}
+
+	public async getByStudent(
+		matricula: number
+	): Promise<ListProjectResponse | null> {
+		const project = await this.client.project.findFirst({
+			where: {
+				mat_aluno: matricula,
+			},
+			select: listProjectQuerySelect,
+		});
+
+		return project;
 	}
 }
