@@ -1,4 +1,4 @@
-import { Project, Student } from "@prisma/client";
+import { Project, Student, Version } from "@prisma/client";
 import { listAdvisorQuerySelect } from "./advisor";
 import { BaseController } from "./_baseController";
 
@@ -9,7 +9,11 @@ export type ListProjectResponse = {
 };
 
 export type CreateProjectBody = Omit<Project, "id"> & {
-	avaliadores: number[];
+	avaliadores: Array<number>;
+};
+
+export type GetProjectResponse = ListProjectResponse & {
+	versoes: Array<Omit<Version, "id_projeto">>;
 };
 
 const listProjectQuerySelect = {
@@ -83,14 +87,26 @@ export class ProjectController extends BaseController {
 
 	public async getByStudent(
 		matricula: number
-	): Promise<ListProjectResponse | null> {
+	): Promise<GetProjectResponse | null> {
 		const project = await this.client.project.findFirst({
 			where: {
 				mat_aluno: matricula,
 			},
-			select: listProjectQuerySelect,
+			select: {
+				...listProjectQuerySelect,
+				versoes: true,
+			},
 		});
 
 		return project;
+	}
+
+	public async createVersion(id_projeto: number, arquivo: string) {
+		return this.client.version.create({
+			data: {
+				id_projeto,
+				arquivo,
+			},
+		});
 	}
 }

@@ -1,4 +1,3 @@
-import { Suggestion } from "@prisma/client";
 import { SuggestionController } from "controllers/suggestion";
 import { Router } from "express";
 import { DEFAULT_ERROR_MSG } from "lib/constants";
@@ -18,18 +17,15 @@ suggestionRoutes.get("/", async (_, res) => {
 	}
 });
 
-suggestionRoutes.post<null, { msg: string } | Suggestion, Suggestion>(
-	"/",
-	async (req, res) => {
-		try {
-			const suggestion = await controller.create(req.body);
-			res.status(200).json(suggestion);
-		} catch (error) {
-			res.status(400).json({
-				msg: DEFAULT_ERROR_MSG,
-			});
-		}
+suggestionRoutes.post("/", async (req, res) => {
+	try {
+		const suggestion = await controller.create(req.body);
+		res.status(200).json(suggestion);
+	} catch (error) {
+		res.status(400).json({
+			msg: DEFAULT_ERROR_MSG,
+		});
 	}
-);
+});
 
 export { suggestionRoutes };

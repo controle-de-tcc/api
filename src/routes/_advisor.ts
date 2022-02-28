@@ -20,24 +20,21 @@ advisorRoutes.get("/", async (_, res) => {
 	}
 });
 
-advisorRoutes.post<null, { msg: string } | Advisor, Advisor>(
-	"/",
-	async (req, res) => {
-		try {
-			const newUser = await authController.signup(req.body);
+advisorRoutes.post("/", async (req, res) => {
+	try {
+		const newUser = await authController.signup(req.body);
 
-			res.status(201).json(newUser as Advisor);
-		} catch (err) {
-			if ((err as Error).message === "409") {
-				return res.status(409).json({
-					msg: "Usuário já existe",
-				});
-			}
-			res.status(400).json({
-				msg: DEFAULT_ERROR_MSG,
+		res.status(201).json(newUser as Advisor);
+	} catch (err) {
+		if ((err as Error).message === "409") {
+			return res.status(409).json({
+				msg: "Usuário já existe",
 			});
 		}
+		res.status(400).json({
+			msg: DEFAULT_ERROR_MSG,
+		});
 	}
-);
+});
 
 export { advisorRoutes };

@@ -20,24 +20,21 @@ studentRoutes.get("/", async (_, res) => {
 	}
 });
 
-studentRoutes.post<null, { msg: string } | Student, Student>(
-	"/",
-	async (req, res) => {
-		try {
-			const newUser = await authController.signup(req.body);
+studentRoutes.post("/", async (req, res) => {
+	try {
+		const newUser = await authController.signup(req.body);
 
-			res.status(201).json(newUser as Student);
-		} catch (err) {
-			if ((err as Error).message === "409") {
-				return res.status(409).json({
-					msg: "Usuário já existe",
-				});
-			}
-			res.status(400).json({
-				msg: DEFAULT_ERROR_MSG,
+		res.status(201).json(newUser as Student);
+	} catch (err) {
+		if ((err as Error).message === "409") {
+			return res.status(409).json({
+				msg: "Usuário já existe",
 			});
 		}
+		res.status(400).json({
+			msg: DEFAULT_ERROR_MSG,
+		});
 	}
-);
+});
 
 export { studentRoutes };

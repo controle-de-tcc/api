@@ -45,6 +45,7 @@ model Project {
     orientador       Advisor              @relation(fields: [siape_orientador], references: [siape])
     siape_orientador Int
     avaliadores      ProjectsOnAdvisors[]
+    versoes          Version[]
     created_at       DateTime             @default(now())
     updated_at       DateTime             @updatedAt
 
@@ -65,6 +66,8 @@ model ProjectsOnAdvisors {
 
 model Version {
     id         Int          @id @default(autoincrement())
+    projeto    Project      @relation(fields: [id_projeto], references: [id])
+    id_projeto Int
     arquivo    String
     sugestoes  Suggestion[]
     created_at DateTime     @default(now())

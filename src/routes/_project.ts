@@ -1,43 +1,37 @@
 import { Router } from "express";
-import { Project } from "@prisma/client";
-import {
-	CreateProjectBody,
-	ListProjectResponse,
-	ProjectController,
-} from "controllers/project";
+import fs from "fs";
+import crypto from "crypto";
+import { ListProjectResponse, ProjectController } from "controllers/project";
 import { DEFAULT_ERROR_MSG } from "lib/constants";
+import multer from "multer";
 
 const projectRoutes = Router();
 
+const upload = multer({ storage: multer.memoryStorage() });
+
 const controller = new ProjectController();
 
-projectRoutes.get<null, { msg: string } | Array<ListProjectResponse>>(
-	"/",
-	async (_, res) => {
-		try {
-			const projects = await controller.list();
-			res.status(200).json(projects);
-		} catch (err) {
-			res.status(400).json({
-				msg: DEFAULT_ERROR_MSG,
-			});
-		}
+projectRoutes.get("/", async (_, res) => {
+	try {
+		const projects = await controller.list();
+		res.status(200).json(projects);
+	} catch (err) {
+		res.status(400).json({
+			msg: DEFAULT_ERROR_MSG,
+		});
 	}
-);
+});
 
-projectRoutes.post<null, { msg: string } | Project, CreateProjectBody>(
-	"/",
-	async (req, res) => {
-		try {
-			const project = await controller.create(req.body);
-			res.status(201).json(project);
-		} catch (err) {
-			res.status(400).json({
-				msg: DEFAULT_ERROR_MSG,
-			});
-		}
+projectRoutes.post("/", async (req, res) => {
+	try {
+		const project = await controller.create(req.body);
+		res.status(201).json(project);
+	} catch (err) {
+		res.status(400).json({
+			msg: DEFAULT_ERROR_MSG,
+		});
 	}
-);
+});
 
 projectRoutes.get<
 	{ siape: string },
@@ -54,19 +48,44 @@ projectRoutes.get<
 	}
 });
 
-projectRoutes.get<{ matricula: string }, { msg: string } | ListProjectResponse>(
-	"/por-aluno/:matricula",
+projectRoutes.get("/por-aluno/:matricula", async (req, res) => {
+	try {
+		const { matricula } = req.params;
+		const project = await controller.getByStudent(Number(matricula));
+		if (project === null) {
+			return res.status(404).json({
+				msg: "Projeto não encontrado",
+			});
+		}
+		res.status(200).json(project);
+	} catch (err) {
+		res.status(400).json({
+			msg: DEFAULT_ERROR_MSG,
+		});
+	}
+});
+
+projectRoutes.post<{ id_projeto: string }>(
+	"/:id_projeto/nova-versao",
+	upload.single("arquivo"),
 	async (req, res) => {
 		try {
-			const { matricula } = req.params;
-			const project = await controller.getByStudent(Number(matricula));
-			if (project === null) {
-				return res.status(404).json({
-					msg: "Projeto não encontrado",
+			if (!req.file) {
+				return res.status(400).json({
+					msg: "Arquivo não enviado",
 				});
 			}
-			res.status(200).json(project);
+
+			const file_path = crypto.randomUUID() + ".pdf";
+			fs.writeFileSync(`public/documents/${file_path}`, req.file.buffer);
+
+			const project = await controller.createVersion(
+				Number(req.params.id_projeto),
+				file_path
+			);
+			res.status(201).json(project);
 		} catch (err) {
+			console.log(err);
 			res.status(400).json({
 				msg: DEFAULT_ERROR_MSG,
 			});

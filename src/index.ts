@@ -1,9 +1,13 @@
 import express from "express";
 import { routes } from "routes";
 import cors from "cors";
+import path from "path";
 
 const api = express();
+
 api.use(express.json());
+api.use(express.urlencoded({ extended: true }));
+api.use(express.static(path.basename(path.dirname("public"))));
 api.use(cors());
 
 api.use("/orientador", routes.advisor);
