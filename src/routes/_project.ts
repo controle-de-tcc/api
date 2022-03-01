@@ -2,6 +2,8 @@ import { Router } from "express";
 import { ListProjectResponse, ProjectController } from "controllers/project";
 import { DEFAULT_ERROR_MSG } from "lib/constants";
 import { authMiddleware } from "middleware/auth";
+import { advisorMiddleware } from "middleware/advisor";
+import { professorMiddleware } from "middleware/professor";
 
 const projectRoutes = Router();
 projectRoutes.use(authMiddleware);
@@ -19,11 +21,12 @@ projectRoutes.get("/", async (_, res) => {
 	}
 });
 
-projectRoutes.post("/", async (req, res) => {
+projectRoutes.post("/", advisorMiddleware, async (req, res) => {
 	try {
 		const project = await controller.create(req.body);
 		res.status(201).json(project);
 	} catch (err) {
+		console.log(err);
 		res.status(400).json({
 			msg: DEFAULT_ERROR_MSG,
 		});
@@ -33,7 +36,7 @@ projectRoutes.post("/", async (req, res) => {
 projectRoutes.get<
 	{ siape: string },
 	{ msg: string } | Array<ListProjectResponse>
->("/por-avaliador/:siape", async (req, res) => {
+>("/por-avaliador/:siape", professorMiddleware, async (req, res) => {
 	try {
 		const { siape } = req.params;
 		const projects = await controller.listByReviewer(Number(siape));
@@ -62,7 +65,7 @@ projectRoutes.get("/por-aluno/:mat_aluno", async (req, res) => {
 	}
 });
 
-projectRoutes.delete("/", async (req, res) => {
+projectRoutes.delete("/", advisorMiddleware, async (req, res) => {
 	try {
 		const { ids } = req.body;
 		await controller.delete(ids);

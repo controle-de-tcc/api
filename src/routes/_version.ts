@@ -5,6 +5,7 @@ import multer from "multer";
 import { VersionController } from "controllers/version";
 import { DEFAULT_ERROR_MSG } from "lib/constants";
 import { authMiddleware } from "middleware/auth";
+import { studentMiddleware } from "middleware/student";
 
 const versionRoutes = Router();
 versionRoutes.use(authMiddleware);
@@ -29,6 +30,7 @@ versionRoutes.get("/:id_versao", async (req, res) => {
 
 versionRoutes.post(
 	"/:id_projeto",
+	studentMiddleware,
 	upload.single("arquivo"),
 	async (req, res) => {
 		try {
@@ -56,7 +58,7 @@ versionRoutes.post(
 	}
 );
 
-versionRoutes.delete("/", async (req, res) => {
+versionRoutes.delete("/", studentMiddleware, async (req, res) => {
 	try {
 		const { ids } = req.body;
 

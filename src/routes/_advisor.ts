@@ -4,6 +4,7 @@ import { AdvisorController } from "controllers/advisor";
 import { DEFAULT_ERROR_MSG } from "lib/constants";
 import { AuthController } from "controllers/auth";
 import { authMiddleware } from "middleware/auth";
+import { advisorMiddleware } from "middleware/advisor";
 
 const advisorRoutes = Router();
 advisorRoutes.use(authMiddleware);
@@ -23,7 +24,7 @@ advisorRoutes.get("/", async (_, res) => {
 	}
 });
 
-advisorRoutes.post("/", async (req, res) => {
+advisorRoutes.post("/", advisorMiddleware, async (req, res) => {
 	try {
 		const newUser = await authController.signup(req.body);
 
@@ -40,7 +41,7 @@ advisorRoutes.post("/", async (req, res) => {
 	}
 });
 
-advisorRoutes.delete("/", async (req, res) => {
+advisorRoutes.delete("/", advisorMiddleware, async (req, res) => {
 	try {
 		const { ids } = req.body;
 

@@ -4,7 +4,7 @@ import { StudentController } from "./student";
 import { BaseController } from "./_baseController";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { LoginRequest, LoginResponse } from "types/auth";
+import { LoginRequest, LoginResponse, UserRoles } from "types/auth";
 
 const studentController = new StudentController();
 const advisorController = new AdvisorController();
@@ -47,19 +47,29 @@ export class AuthController extends BaseController {
 
 		const isStudent = "matricula" in user;
 		const id = isStudent ? user.matricula : user.siape;
-		const token = jwt.sign({ id }, String(process.env.JWT_SECRET), {
-			expiresIn: "1w",
-		});
+		const user_type = isStudent ? UserRoles.Student : UserRoles.Professor;
+		const token = jwt.sign(
+			{
+				id,
+				user_type,
+				tipo_professor:
+					"tipo_professor" in user ? user.tipo_professor : null,
+			},
+			String(process.env.JWT_SECRET),
+			{
+				expiresIn: "1w",
+			}
+		);
 
 		const userObj = {
 			...user,
 			is_active: true,
-		};
-		delete (userObj as any).senha;
+		} as any;
+		delete userObj.senha;
 
 		return {
 			token,
-			userType: isStudent ? "student" : "advisor",
+			user_type,
 			user: userObj,
 		};
 	}

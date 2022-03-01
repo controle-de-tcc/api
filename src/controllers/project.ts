@@ -55,8 +55,16 @@ export class ProjectController extends BaseController {
 		const project = await this.client.project.create({
 			data: {
 				titulo: body.titulo,
-				mat_aluno: body.mat_aluno,
-				siape_orientador: body.siape_orientador,
+				aluno: {
+					connect: {
+						matricula: body.mat_aluno,
+					},
+				},
+				orientador: {
+					connect: {
+						siape: body.siape_orientador,
+					},
+				},
 				avaliadores: {
 					create: body.avaliadores.map((siape) => ({
 						avaliador: { connect: { siape } },

@@ -5,6 +5,7 @@ import multer from "multer";
 import { DEFAULT_ERROR_MSG } from "lib/constants";
 import { SuggestionController } from "controllers/suggestion";
 import { authMiddleware } from "middleware/auth";
+import { professorMiddleware } from "middleware/professor";
 
 const suggestionRoutes = Router();
 suggestionRoutes.use(authMiddleware);
@@ -15,6 +16,7 @@ const controller = new SuggestionController();
 
 suggestionRoutes.post(
 	"/:id_versao",
+	professorMiddleware,
 	upload.single("arquivo"),
 	async (req, res) => {
 		try {
@@ -46,7 +48,7 @@ suggestionRoutes.post(
 	}
 );
 
-suggestionRoutes.delete("/", async (req, res) => {
+suggestionRoutes.delete("/", professorMiddleware, async (req, res) => {
 	try {
 		const { ids } = req.body;
 
