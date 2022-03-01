@@ -1,4 +1,4 @@
-import { Project, Student, Version } from "@prisma/client";
+import { Project, Student, Suggestion, Version } from "@prisma/client";
 import { listAdvisorQuerySelect } from "./advisor";
 import { BaseController } from "./_baseController";
 
@@ -14,6 +14,17 @@ export type CreateProjectBody = Omit<Project, "id"> & {
 
 export type GetProjectResponse = ListProjectResponse & {
 	versoes: Array<Omit<Version, "id_projeto">>;
+};
+
+export type GetProjectVersionResponse = Version & {
+	projeto: ListProjectResponse;
+	sugestoes: Array<Omit<Suggestion, "id_versao">>;
+};
+
+export type CreateSuggestionBody = {
+	siape_professor: number;
+	texto: string;
+	arquivo: string;
 };
 
 const listProjectQuerySelect = {
@@ -86,11 +97,11 @@ export class ProjectController extends BaseController {
 	}
 
 	public async getByStudent(
-		matricula: number
+		mat_aluno: number
 	): Promise<GetProjectResponse | null> {
 		const project = await this.client.project.findFirst({
 			where: {
-				mat_aluno: matricula,
+				mat_aluno,
 			},
 			select: {
 				...listProjectQuerySelect,
@@ -106,6 +117,55 @@ export class ProjectController extends BaseController {
 			data: {
 				id_projeto,
 				arquivo,
+			},
+		});
+	}
+
+	public async getByVersion(
+		id_version: number
+	): Promise<GetProjectVersionResponse | null> {
+		const version = this.client.version.findFirst({
+			where: {
+				id: id_version,
+			},
+			select: {
+				id: true,
+				id_projeto: true,
+				arquivo: true,
+				created_at: true,
+				updated_at: true,
+				projeto: {
+					select: listProjectQuerySelect,
+				},
+				sugestoes: {
+					include: {
+						professor: true,
+					},
+				},
+			},
+		});
+
+		return version;
+	}
+
+	public async createSuggestion(
+		id_versao: number,
+		body: CreateSuggestionBody
+	) {
+		return this.client.suggestion.create({
+			data: {
+				versao: {
+					connect: {
+						id: id_versao,
+					},
+				},
+				professor: {
+					connect: {
+						siape: body.siape_professor,
+					},
+				},
+				texto: body.texto,
+				arquivo: body.arquivo,
 			},
 		});
 	}

@@ -79,6 +79,7 @@ model Version {
 model Suggestion {
     id              Int      @id @default(autoincrement())
     texto           String   @db.VarChar(500)
+    arquivo         String
     professor       Advisor  @relation(fields: [siape_professor], references: [siape])
     siape_professor Int
     versao          Version  @relation(fields: [id_versao], references: [id])
