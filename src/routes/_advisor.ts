@@ -3,8 +3,10 @@ import { Advisor } from "@prisma/client";
 import { AdvisorController } from "controllers/advisor";
 import { DEFAULT_ERROR_MSG } from "lib/constants";
 import { AuthController } from "controllers/auth";
+import { authMiddleware } from "middleware/auth";
 
 const advisorRoutes = Router();
+advisorRoutes.use(authMiddleware);
 
 const advisorController = new AdvisorController();
 const authController = new AuthController();

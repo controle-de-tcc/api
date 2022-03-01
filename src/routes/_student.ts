@@ -3,8 +3,10 @@ import { Student } from "@prisma/client";
 import { StudentController } from "controllers/student";
 import { DEFAULT_ERROR_MSG } from "lib/constants";
 import { AuthController } from "controllers/auth";
+import { authMiddleware } from "middleware/auth";
 
 const studentRoutes = Router();
+studentRoutes.use(authMiddleware);
 
 const studentController = new StudentController();
 const authController = new AuthController();

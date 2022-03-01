@@ -4,8 +4,10 @@ import crypto from "crypto";
 import multer from "multer";
 import { DEFAULT_ERROR_MSG } from "lib/constants";
 import { SuggestionController } from "controllers/suggestion";
+import { authMiddleware } from "middleware/auth";
 
 const suggestionRoutes = Router();
+suggestionRoutes.use(authMiddleware);
 
 const upload = multer({ storage: multer.memoryStorage() });
 

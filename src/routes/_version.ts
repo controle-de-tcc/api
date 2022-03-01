@@ -4,8 +4,10 @@ import crypto from "crypto";
 import multer from "multer";
 import { VersionController } from "controllers/version";
 import { DEFAULT_ERROR_MSG } from "lib/constants";
+import { authMiddleware } from "middleware/auth";
 
 const versionRoutes = Router();
+versionRoutes.use(authMiddleware);
 
 const upload = multer({ storage: multer.memoryStorage() });
 

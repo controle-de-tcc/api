@@ -55,6 +55,7 @@ export class AuthController extends BaseController {
 			...user,
 			is_active: true,
 		};
+		delete (userObj as any).senha;
 
 		return {
 			token,
