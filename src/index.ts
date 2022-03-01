@@ -13,7 +13,6 @@ api.use(cors());
 api.use("/orientador", routes.advisor);
 api.use("/projeto", routes.project);
 api.use("/aluno", routes.student);
-api.use("/sugestao", routes.suggestion);
 api.use("/auth", routes.auth);
 
 const PORT = process.env.PORT || 8000;

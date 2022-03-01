@@ -28,6 +28,9 @@ export class AdvisorController extends BaseController {
 	public async list(): Promise<Array<ListAdvisorResponse>> {
 		const advisors = this.client.advisor.findMany({
 			select: listAdvisorQuerySelect,
+			where: {
+				is_active: true,
+			},
 		});
 		return advisors;
 	}
@@ -35,13 +38,29 @@ export class AdvisorController extends BaseController {
 	public async get(
 		email: string
 	): Promise<(ListAdvisorResponse & { senha: string }) | null> {
-		const advisor = this.client.advisor.findUnique({
-			where: { email },
+		const advisor = this.client.advisor.findFirst({
 			select: {
 				...listAdvisorQuerySelect,
 				senha: true,
 			},
+			where: {
+				email,
+				is_active: true,
+			},
 		});
 		return advisor;
+	}
+
+	public async delete(ids: Array<number>): Promise<void> {
+		await this.client.advisor.updateMany({
+			data: {
+				is_active: false,
+			},
+			where: {
+				siape: {
+					in: ids,
+				},
+			},
+		});
 	}
 }

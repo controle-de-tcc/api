@@ -37,18 +37,26 @@ const listProjectQuerySelect = {
 			email: true,
 			created_at: true,
 			updated_at: true,
+			is_active: true,
 		},
 	},
 	orientador: {
-		select: listAdvisorQuerySelect,
+		select: {
+			...listAdvisorQuerySelect,
+			is_active: true,
+		},
 	},
 	avaliadores: {
 		select: {
 			avaliador: {
-				select: listAdvisorQuerySelect,
+				select: {
+					...listAdvisorQuerySelect,
+					is_active: true,
+				},
 			},
 		},
 	},
+	is_active: true,
 	created_at: true,
 	updated_at: true,
 };
@@ -73,6 +81,9 @@ export class ProjectController extends BaseController {
 	public async list(): Promise<Array<ListProjectResponse>> {
 		const projects = await this.client.project.findMany({
 			select: listProjectQuerySelect,
+			where: {
+				is_active: true,
+			},
 		});
 		return projects;
 	}
@@ -81,6 +92,7 @@ export class ProjectController extends BaseController {
 		siape: number
 	): Promise<Array<ListProjectResponse>> {
 		const projects = await this.client.project.findMany({
+			select: listProjectQuerySelect,
 			where: {
 				avaliadores: {
 					some: {
@@ -89,8 +101,8 @@ export class ProjectController extends BaseController {
 						},
 					},
 				},
+				is_active: true,
 			},
-			select: listProjectQuerySelect,
 		});
 
 		return projects;
@@ -100,12 +112,13 @@ export class ProjectController extends BaseController {
 		mat_aluno: number
 	): Promise<GetProjectResponse | null> {
 		const project = await this.client.project.findFirst({
-			where: {
-				mat_aluno,
-			},
 			select: {
 				...listProjectQuerySelect,
 				versoes: true,
+			},
+			where: {
+				mat_aluno,
+				is_active: true,
 			},
 		});
 
@@ -125,9 +138,6 @@ export class ProjectController extends BaseController {
 		id_version: number
 	): Promise<GetProjectVersionResponse | null> {
 		const version = this.client.version.findFirst({
-			where: {
-				id: id_version,
-			},
 			select: {
 				id: true,
 				id_projeto: true,
@@ -142,6 +152,11 @@ export class ProjectController extends BaseController {
 						professor: true,
 					},
 				},
+				is_active: true,
+			},
+			where: {
+				id: id_version,
+				is_active: true,
 			},
 		});
 
@@ -166,6 +181,19 @@ export class ProjectController extends BaseController {
 				},
 				texto: body.texto,
 				arquivo: body.arquivo,
+			},
+		});
+	}
+
+	public async delete(ids: Array<number>): Promise<void> {
+		await this.client.project.updateMany({
+			data: {
+				is_active: false,
+			},
+			where: {
+				id: {
+					in: ids,
+				},
 			},
 		});
 	}

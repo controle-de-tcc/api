@@ -28,6 +28,9 @@ export class StudentController extends BaseController {
 	public async list(): Promise<Array<ListStudentResponse>> {
 		const students = await this.client.student.findMany({
 			select: listStudentQuerySelect,
+			where: {
+				is_active: true,
+			},
 		});
 		return students;
 	}
@@ -35,13 +38,29 @@ export class StudentController extends BaseController {
 	public async get(
 		email: string
 	): Promise<(ListStudentResponse & { senha: string }) | null> {
-		const student = await this.client.student.findUnique({
-			where: { email },
+		const student = await this.client.student.findFirst({
+			where: {
+				email,
+				is_active: true,
+			},
 			select: {
 				...listStudentQuerySelect,
 				senha: true,
 			},
 		});
 		return student;
+	}
+
+	public async delete(ids: Array<number>): Promise<void> {
+		await this.client.student.updateMany({
+			data: {
+				is_active: false,
+			},
+			where: {
+				matricula: {
+					in: ids,
+				},
+			},
+		});
 	}
 }

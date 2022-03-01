@@ -37,4 +37,17 @@ studentRoutes.post("/", async (req, res) => {
 	}
 });
 
+studentRoutes.delete("/", async (req, res) => {
+	try {
+		const { ids } = req.body;
+		await studentController.delete(ids);
+		res.status(200).send();
+	} catch (err) {
+		console.log(err);
+		res.status(400).json({
+			msg: DEFAULT_ERROR_MSG,
+		});
+	}
+});
+
 export { studentRoutes };

@@ -51,10 +51,15 @@ export class AuthController extends BaseController {
 			expiresIn: "1w",
 		});
 
+		const userObj = {
+			...user,
+			is_active: true,
+		};
+
 		return {
 			token,
 			userType: isStudent ? "student" : "advisor",
-			user,
+			user: userObj,
 		};
 	}
 }

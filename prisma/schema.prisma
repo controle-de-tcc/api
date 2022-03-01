@@ -19,6 +19,7 @@ model Advisor {
     sugestao       Suggestion[]
     projeto        Project[] // essa é a referencia do projeto ao orientador
     projetos       ProjectsOnAdvisors[] // essa é a referencia do projeto aos avaliadores
+    is_active      Boolean              @default(true)
     created_at     DateTime             @default(now())
     updated_at     DateTime             @updatedAt
 
@@ -31,6 +32,7 @@ model Student {
     email      String   @unique
     senha      String
     projeto    Project?
+    is_active  Boolean  @default(true)
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
@@ -46,6 +48,7 @@ model Project {
     siape_orientador Int
     avaliadores      ProjectsOnAdvisors[]
     versoes          Version[]
+    is_active        Boolean              @default(true)
     created_at       DateTime             @default(now())
     updated_at       DateTime             @updatedAt
 
@@ -57,6 +60,7 @@ model ProjectsOnAdvisors {
     id_projeto Int
     avaliador  Advisor  @relation(fields: [siape], references: [siape])
     siape      Int
+    is_active  Boolean  @default(true)
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
@@ -70,6 +74,7 @@ model Version {
     id_projeto Int
     arquivo    String
     sugestoes  Suggestion[]
+    is_active  Boolean      @default(true)
     created_at DateTime     @default(now())
     updated_at DateTime     @updatedAt
 
@@ -84,6 +89,7 @@ model Suggestion {
     siape_professor Int
     versao          Version  @relation(fields: [id_versao], references: [id])
     id_versao       Int
+    is_active       Boolean  @default(true)
     created_at      DateTime @default(now())
     updated_at      DateTime @updatedAt
 
