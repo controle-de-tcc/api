@@ -1,4 +1,4 @@
-import { Project, Student, Suggestion, Version } from "@prisma/client";
+import { Project, Student, Version } from "@prisma/client";
 import { listAdvisorQuerySelect } from "./advisor";
 import { BaseController } from "./_baseController";
 
@@ -16,18 +16,7 @@ export type GetProjectResponse = ListProjectResponse & {
 	versoes: Array<Omit<Version, "id_projeto">>;
 };
 
-export type GetProjectVersionResponse = Version & {
-	projeto: ListProjectResponse;
-	sugestoes: Array<Omit<Suggestion, "id_versao">>;
-};
-
-export type CreateSuggestionBody = {
-	siape_professor: number;
-	texto: string;
-	arquivo: string;
-};
-
-const listProjectQuerySelect = {
+export const listProjectQuerySelect = {
 	id: true,
 	titulo: true,
 	aluno: {
@@ -114,7 +103,11 @@ export class ProjectController extends BaseController {
 		const project = await this.client.project.findFirst({
 			select: {
 				...listProjectQuerySelect,
-				versoes: true,
+				versoes: {
+					where: {
+						is_active: true,
+					},
+				},
 			},
 			where: {
 				mat_aluno,
@@ -123,66 +116,6 @@ export class ProjectController extends BaseController {
 		});
 
 		return project;
-	}
-
-	public async createVersion(id_projeto: number, arquivo: string) {
-		return this.client.version.create({
-			data: {
-				id_projeto,
-				arquivo,
-			},
-		});
-	}
-
-	public async getByVersion(
-		id_version: number
-	): Promise<GetProjectVersionResponse | null> {
-		const version = this.client.version.findFirst({
-			select: {
-				id: true,
-				id_projeto: true,
-				arquivo: true,
-				created_at: true,
-				updated_at: true,
-				projeto: {
-					select: listProjectQuerySelect,
-				},
-				sugestoes: {
-					include: {
-						professor: true,
-					},
-				},
-				is_active: true,
-			},
-			where: {
-				id: id_version,
-				is_active: true,
-			},
-		});
-
-		return version;
-	}
-
-	public async createSuggestion(
-		id_versao: number,
-		body: CreateSuggestionBody
-	) {
-		return this.client.suggestion.create({
-			data: {
-				versao: {
-					connect: {
-						id: id_versao,
-					},
-				},
-				professor: {
-					connect: {
-						siape: body.siape_professor,
-					},
-				},
-				texto: body.texto,
-				arquivo: body.arquivo,
-			},
-		});
 	}
 
 	public async delete(ids: Array<number>): Promise<void> {

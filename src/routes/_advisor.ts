@@ -12,6 +12,7 @@ const authController = new AuthController();
 advisorRoutes.get("/", async (_, res) => {
 	try {
 		const advisors = await advisorController.list();
+
 		res.status(200).json(advisors);
 	} catch (err) {
 		res.status(400).json({
@@ -40,7 +41,9 @@ advisorRoutes.post("/", async (req, res) => {
 advisorRoutes.delete("/", async (req, res) => {
 	try {
 		const { ids } = req.body;
+
 		await advisorController.delete(ids);
+
 		res.status(200).send();
 	} catch (err) {
 		console.log(err);
